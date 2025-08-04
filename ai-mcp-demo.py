@@ -1,24 +1,21 @@
-from flask import Flask, jsonify
 from mcp.server.fastmcp import FastMCP
+import tools
 import platform
 import psutil
 import subprocess
 import json
 
-# 创建 Flask 应用
-app = Flask(__name__)
-
-# MCP 服务
 mcp = FastMCP("host info mcp")
 
-# 工具函数：获取主机信息
 
 
-
-@app.route('/mcp', methods=['GET'])
-def get_host_info() -> dict:
-    """获取主机信息并返回字典"""
-    info = {
+@server.tool("get_host_info")
+def get_host_info() -> str:
+    """get host information
+    Returns:
+        str: the host information in JSON string
+    """
+    info: dict[str, str] = {
         "system": platform.system(),
         "release": platform.release(),
         "machine": platform.machine(),
@@ -40,14 +37,10 @@ def get_host_info() -> dict:
     except Exception:
         info["cpu_model"] = "Unknown"
 
-    return info  # 返回字典而不是 JSON 字符串
-
-# 注册工具函数
-mcp.add_tool(get_host_info)
+    return json.dumps(info, indent=4)
 
 def main():
-    """启动 Flask 服务器"""
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    mcp.run(protocol="sse", host="0.0.0.0", port=3333) # sse
 
 if __name__ == "__main__":
     main()
