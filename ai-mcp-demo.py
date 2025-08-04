@@ -1,5 +1,4 @@
 from mcp.server.fastmcp import FastMCP
-import tools
 import platform
 import psutil
 import subprocess
@@ -9,7 +8,7 @@ mcp = FastMCP("host info mcp")
 
 
 
-@server.tool("get_host_info")
+@mcp.tool("get_host_info")
 def get_host_info() -> str:
     """get host information
     Returns:
